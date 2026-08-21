@@ -1,0 +1,25 @@
+# Controlled data and local outputs
+/data/
+/outputs/
+/models/
+/logs/
+
+# Python and tooling
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Archives are release artifacts created outside the repository
+*.zip
+*.tar.gz
+

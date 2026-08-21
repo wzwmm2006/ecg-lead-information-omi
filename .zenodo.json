@@ -1,0 +1,40 @@
+{
+  "title": "The Diagnostic Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction",
+  "upload_type": "software",
+  "description": "Analysis code for reproducible comparison of four ECG lead-information configurations for high-sensitivity detection of angiography-defined occlusion myocardial infarction, including patient-grouped OOF analysis and STAFF III controlled-occlusion analysis.",
+  "creators": [
+    {
+      "name": "Zheng, Mingming",
+      "orcid": "0009-0009-4087-6959",
+      "affiliation": "Department of Cardiology, Hubei Provincial Hospital of Traditional Chinese Medicine"
+    },
+    {
+      "name": "Liu, Liang",
+      "affiliation": "Department of Cardiology, Hubei Provincial Hospital of Traditional Chinese Medicine"
+    }
+  ],
+  "access_right": "open",
+  "license": "MIT",
+  "version": "1.0.0",
+  "keywords": [
+    "occlusion myocardial infarction",
+    "electrocardiography",
+    "artificial intelligence",
+    "diagnostic accuracy",
+    "reproducibility"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.6084/m9.figshare.29925314",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.13026/C20P4H",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
+    }
+  ],
+  "notes": "Associated Scientific Reports article DOI: ARTICLE_DOI_TBD"
+}
+

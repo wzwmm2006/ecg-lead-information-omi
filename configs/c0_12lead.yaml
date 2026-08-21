@@ -1,0 +1,43 @@
+study:
+  name: ecg_lead_information_omi
+  version: 1.0.0
+  base_seed: 20260813
+configuration:
+  id: C0
+  position: 0
+  label: 12-lead ECG
+  lead_names: [I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6]
+  lead_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+paths:
+  train_metadata: data/figshare/train.csv
+  test_metadata: data/figshare/test.csv
+  clinical_waveforms: data/figshare/waveforms
+  processed_train: data/processed/train_waveforms.npy
+  processed_test: data/processed/test_waveforms.npy
+  staffiii: data/staffiii-1.0.0
+  outputs: outputs
+  models: models
+data:
+  sampling_rate_hz: 500
+  duration_seconds: 10
+  input_samples: 5000
+  output_samples: 500
+  scale_floor: 0.001
+  excluded_train_records: ['03228', '14262']
+model:
+  convolution_channels: [32, 64, 96]
+  kernels: [11, 9, 7]
+  pool_size: 4
+training:
+  folds: 5
+  epochs: 10
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  final_calibration_fraction: 0.2
+evaluation:
+  target_sensitivity: 0.95
+  bootstrap_replicates: 1000
+  probability_clip_epsilon: 0.000001
+  frozen_calibration_threshold: 0.008731307461857796
+

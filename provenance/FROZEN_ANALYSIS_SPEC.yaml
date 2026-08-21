@@ -1,0 +1,42 @@
+study_version: 1.0.0
+base_seed: 20260813
+canonical_leads: [I, II, III, aVR, aVL, aVF, V1, V2, V3, V4, V5, V6]
+clinical_input:
+  sampling_rate_hz: 500
+  duration_seconds: 10
+  samples_per_lead: 5000
+preprocessing:
+  output_sampling_rate_hz: 50
+  output_samples: 500
+  downsampling: fixed_mean_over_10_samples
+  centering: per_record_per_lead_median
+  scaling: per_record_per_lead_standard_deviation
+  scale_floor: 0.001
+model:
+  convolution_channels: [32, 64, 96]
+  kernels: [11, 9, 7]
+  max_pool_after_blocks: [1, 2]
+  max_pool_size: 4
+  output: single_logit
+training:
+  optimizer: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  epochs: 10
+  batch_size: 256
+  oof_folds: 5
+  oof_split: StratifiedGroupKFold
+  patient_weighting: inverse_record_count_times_inverse_class_prevalence
+evaluation:
+  target_sensitivity: 0.95
+  threshold_rule: first_descending_score_reaching_target_sensitivity
+  bootstrap_replicates: 1000
+  paired_spec_bootstrap_seed: 20260912
+staffiii:
+  source_sampling_rate_hz: 1000
+  resampling: scipy_signal_resample_poly_1_to_2_then_fixed_mean_over_10_samples
+  probability_clip_epsilon: 0.000001
+  bootstrap_seed: 20260813
+  paired_concordance_bootstrap_seed: 20260904
+excluded_train_records: ['03228', '14262']
+
