@@ -1,24 +1,16 @@
-# GitHub and Zenodo Release Checklist
+# GitHub and Zenodo Release Record
 
 ## GitHub
 
-- Confirm that `CITATION.cff` uses the final GitHub repository URL.
-- Do not add a software or article DOI until the identifier has been assigned.
-- Review the public tree and source manifest one final time.
-- Confirm that `data/`, `outputs/`, `models/`, `logs/`, archives, and Python caches are ignored and absent.
-- Create the public GitHub repository with the same repository name.
-- Commit the reviewed allowlisted files.
-- Add the remote and push the default branch.
-- Create annotated tag `v1.0.0` and a GitHub release using `RELEASE_NOTES.md`.
-- Attach the prepared ZIP and checksum if a standalone archive is desired in addition to Zenodo's GitHub snapshot.
+- [x] Public GitHub repository created: https://github.com/wzwmm2006/ecg-lead-information-omi
+- [x] Reviewed repository contents pushed to the default branch.
+- [x] Public-release boundary verified; controlled data, models, outputs, archives, and caches are absent.
+- [x] GitHub release `v1.0.0` created.
 
 ## Zenodo
 
-- Sign in to Zenodo and enable the GitHub repository under GitHub integration.
-- Confirm the creators, affiliations, title, description, software type, MIT license, keywords, related dataset DOIs, and version against `.zenodo.json`.
-- Publish the GitHub `v1.0.0` release to trigger archival, or upload the prepared ZIP to a reserved Zenodo draft.
-- Verify that the deposited archive contains no controlled data and matches the local SHA-256 checksum.
-- Record the version DOI and concept DOI.
-- Add the assigned version DOI to `CITATION.cff` after Zenodo archives the software release.
-- Add the Scientific Reports citation only after the article is published and its bibliographic metadata are final.
-- Update the GitHub repository description and README citation details without altering the archived v1.0.0 contents.
+- [x] Zenodo archive completed for software version `1.0.0`.
+- [x] Zenodo DOI assigned: https://doi.org/10.5281/zenodo.22046832
+- [x] DOI recorded in `CITATION.cff` and repository documentation.
+
+The Scientific Reports citation will be added only after the article is published and its bibliographic metadata are final. The archived `v1.0.0` release remains unchanged.

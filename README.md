@@ -133,6 +133,16 @@ Local outputs can contain patient or record identifiers and must remain under ig
 
 Deep-learning results can vary across hardware and low-level numerical libraries even with fixed random seeds. The reference versions are pinned, and each command records run metadata to support comparison with the frozen analysis.
 
-## Citation and license
+## Citation
 
-Citation metadata are provided in `CITATION.cff`. A version-specific DOI will be added after the software release is archived in Zenodo. The code is released under the MIT License.
+The reproducibility package for this study is archived on Zenodo:
+
+https://doi.org/10.5281/zenodo.22046832
+
+Please cite the Zenodo release when using this software package. Citation metadata are provided in `CITATION.cff`.
+
+GitHub repository: https://github.com/wzwmm2006/ecg-lead-information-omi
+
+## License
+
+The code is released under the MIT License.
