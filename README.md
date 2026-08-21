@@ -135,4 +135,4 @@ Deep-learning results can vary across hardware and low-level numerical libraries
 
 ## Citation and license
 
-Citation metadata are provided in `CITATION.cff`. Replace the placeholder repository owner and DOI fields after GitHub and Zenodo publication. The code is released under the MIT License.
+Citation metadata are provided in `CITATION.cff`. A version-specific DOI will be added after the software release is archived in Zenodo. The code is released under the MIT License.

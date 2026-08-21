@@ -4,5 +4,4 @@ This is the reproducibility release associated with the Scientific Reports manus
 
 The release contains the frozen analysis implementation for clinical ECG preprocessing, C0-C3 model training, patient-grouped OOF evaluation, calibration-threshold selection, patient-level bootstrap inference, STAFF III controlled-occlusion analysis, and figure generation. It contains no source waveform data, patient identifiers, hidden test labels, trained patient-data checkpoints, or restricted metadata.
 
-Before publishing the release, replace the GitHub owner, Zenodo DOI placeholder, article DOI placeholder, and archive checksum with the assigned values.
-
+Before publishing the release, confirm the repository metadata and archive checksum. Add the assigned software DOI to `CITATION.cff` only after Zenodo has archived the release.

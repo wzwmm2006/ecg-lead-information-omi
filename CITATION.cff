@@ -1,27 +1,13 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the archived software release and the associated article."
+message: "If you use this software, please cite it using the metadata in this file."
 title: "The Diagnostic Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction"
 type: software
 version: 1.0.0
-date-released: 2026-08-21
 authors:
   - family-names: Zheng
     given-names: Mingming
     orcid: "https://orcid.org/0009-0009-4087-6959"
   - family-names: Liu
     given-names: Liang
-repository-code: "https://github.com/OWNER/ECG-Lead-Information-OMI-Reproducibility"
-doi: "10.5281/zenodo.TBD"
+repository-code: "https://github.com/wzwmm2006/ecg-lead-information-omi"
 license: MIT
-preferred-citation:
-  type: article
-  title: "The Diagnostic Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction"
-  authors:
-    - family-names: Zheng
-      given-names: Mingming
-    - family-names: Liu
-      given-names: Liang
-  journal: "Scientific Reports"
-  year: 2026
-  doi: "ARTICLE_DOI_TBD"
-
