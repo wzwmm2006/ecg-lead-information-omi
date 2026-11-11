@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it using the metadata in this file."
 title: "The Specificity Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction"
 type: software
-version: 1.1.0
+version: 1.1.1
 authors:
   - family-names: Zheng
     given-names: Mingming
@@ -10,12 +10,15 @@ authors:
   - family-names: Liu
     given-names: Liang
 repository-code: "https://github.com/wzwmm2006/ecg-lead-information-omi"
-doi: "10.5281/zenodo.22046832"
+doi: "10.5281/zenodo.24126410"
 license: MIT
 identifiers:
   - type: doi
+    value: "10.5281/zenodo.24126410"
+    description: "Zenodo version DOI for the v1.1.0 archived release"
+  - type: doi
     value: "10.5281/zenodo.22046832"
-    description: "Zenodo concept DOI for this software"
+    description: "Zenodo concept DOI covering all released versions"
 keywords:
   - occlusion myocardial infarction
   - electrocardiography

@@ -1,6 +1,6 @@
 # ECG Lead Information for OMI: Reproducibility Package
 
-Version **1.1.0**. The version-specific Zenodo DOI will be recorded in `CODE_AVAILABILITY.md` and the project release record once the archive is published and verified.
+Patch version **1.1.1**. The published v1.1.0 archive is available at `10.5281/zenodo.24126410`. Version 1.1.1 corrects the public P3 patient-cluster bootstrap helper, adds regression tests for sampling and patient multiplicity, and updates release metadata. Its version-specific DOI will be recorded here after archival.
 
 This repository contains the analysis code and provenance for:
 
@@ -90,7 +90,7 @@ bash scripts/recover_p3_tables.sh /path/to/authorized-frozen-project
 bash scripts/summarize_sampling_sensitivity.sh /path/to/authorized-frozen-project
 ```
 
-A matching hash is classified `FROZEN_OUTPUT_MATCHED`. It does not mean that a model was retrained. Executable helpers for synthetic and deterministic checks are classified separately in `R2_V1_1_VALIDATION_REPORT.md`. Do not publish patient identifiers, predictions, checkpoints, or local run metadata.
+A matching hash is classified `FROZEN_OUTPUT_MATCHED`. It does not mean that a model was retrained. Executable helpers for synthetic and deterministic checks are classified separately in `provenance/VALIDATION_STATUS.md`. Do not publish patient identifiers, predictions, checkpoints, or local run metadata.
 
 ## Figures
 
@@ -115,4 +115,4 @@ Exact neural-network weights can vary across hardware, CUDA/cuDNN, and low-level
 
 ## Citation and license
 
-Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the concept DOI, repository, version, and software extent; the version-specific DOI is listed in `CODE_AVAILABILITY.md` once archival is verified. The code is released under the MIT License.
+Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the v1.1.0 version DOI and the concept DOI, repository, version, and software extent; `CODE_AVAILABILITY.md` lists the published archival identifiers and will list the v1.1.1 DOI after archival. The code is released under the MIT License.

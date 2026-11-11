@@ -1,31 +1,38 @@
-# Release Notes - v1.1.0
+# Release Notes - v1.1.1
 
-Version 1.1.0 of the Topic890 reproducibility package accompanies the revised Scientific Reports manuscript. It preserves the original clinical question and adds no new model training or new clinical analysis. Version-specific archival identifiers are recorded only after publication and direct verification.
+Version 1.1.1 is a patch to the Topic890 reproducibility package. It corrects the public P3 patient-cluster bootstrap helper and release metadata; it does not retrain a model, rerun inference, or recompute the manuscript's frozen P3 confidence intervals.
 
-## Scope
+## Corrections
 
-v1.1.0 adds provenance and executable verification for the revision analyses:
+- **P3 bootstrap sampling.** v1.1.0 reset a fold-specific RNG inside every replicate, so successive replicates could draw identical patients. The corrected helper uses one persistent random stream per fold that advances across replicates.
+- **Patient multiplicity.** The corrected helper samples patients with replacement and retains every ECG row of each selected patient, including repeated patient selections. It no longer collapses repeated patients through a pivot.
+- **Fold weighting.** Fold weights use the original non-OMI ECG count, as in the frozen P3 analysis plan.
+- **Invalid replicates.** Incomplete replicates are counted and reported rather than entering percentile intervals.
+- **Regression tests.** Synthetic-data tests check varying replicate draws, patient multiplicity, deterministic replay with a fixed seed, non-degenerate interval width, and explicit reporting when no replicate is valid.
+- **Release metadata.** The README, code availability statement, release checklist, citation metadata, and internal report references now match the published v1.1.0 archive and the v1.1.1 patch.
 
-- patient-disjoint A1 calibration with two seeds;
-- A2a configuration-local amplitude-preserving preprocessing;
-- P3 post hoc matched-TPR interpolation and paired bootstrap;
-- 100/250-Hz preprocessing sensitivity;
-- source-derived clinical baseline and timing utilities;
-- table generation helpers, plus figure generators for the package's own aggregate inputs.
+## Published identity
+
+| Item | Value |
+|---|---|
+| v1.1.0 GitHub tag | `v1.1.0` |
+| v1.1.0 commit | `6064e366bb853c3557b89189c783d6568b69a391` |
+| v1.1.0 Zenodo DOI | `10.5281/zenodo.24126410` |
+| Zenodo concept DOI | `10.5281/zenodo.22046832` |
+
+The v1.1.0 tag and Zenodo record remain unchanged. The v1.1.0 public P3 bootstrap helper is defective; use the v1.1.1 helper for patient-cluster bootstrap.
+
+## Research boundary
+
+The P3 point estimates and the frozen nine confidence intervals are retained as historical results from `provenance/frozen_scripts/P3_MATCHED_SENSITIVITY_ANALYSIS.py`. A read-only 2,000-replicate replay from the frozen predictions reproduced all nine point estimates and kept every confidence-interval endpoint within 0.00875; 2/9 intervals excluded zero in both the frozen and replayed results. The corrected helper implements the public, auditable path for applying the same patient-within-fold sampling and non-OMI ECG weighting. The package does not claim a new neural-network fit, hidden TEST access, STAFF III re-inference, or external clinical validation. Figure generators use authorized aggregate inputs and do not claim pixel-exact reproduction of manuscript artwork.
 
 ## Evidence labels
-
-The package distinguishes four labels:
 
 - `EXECUTABLE_VERIFIED`: a deterministic helper or test ran on synthetic or already-frozen data.
 - `FROZEN_OUTPUT_MATCHED`: a supplied artifact byte-matched its recorded SHA-256.
 - `PROVENANCE_ONLY`: source or frozen result is retained, but the producing computation was not re-executed.
 - `NOT_VERIFIED`: no successful check supports the claim.
 
-## Research boundary
-
-The release does not claim a fresh neural-network refit, byte-identical re-execution, hidden TEST access, STAFF III re-inference, or external clinical validation. The original OOF paired bootstrap interval is retained as historical evidence and is not claimed as exactly reproduced. Figure generators produce package figures from authorized aggregate inputs; pixel-identical reproduction of the final manuscript artwork is not claimed.
-
 ## Review
 
-Before citing a version-specific DOI, read `provenance/V1_0_0_RELEASE_IDENTITY.md`, `R2_V1_1_CODE_AUDIT.md`, and `R2_V1_1_VALIDATION_REPORT.md`. Confirm that no controlled artifacts are present and that the Zenodo concept record and version chain resolve as expected.
+Read `provenance/VALIDATION_STATUS.md`, `provenance/V1_0_0_RELEASE_IDENTITY.md`, and the external project release record. Confirm that no controlled artifacts are present and that the Zenodo concept record and version chain resolve as expected.

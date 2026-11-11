@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.1 - Patch under preparation
+
+- Corrected `src/recovered/p3/bootstrap.py`: each fold now has a persistent random stream that advances across bootstrap replicates.
+- Preserved all ECG rows and repeated patient selections, using patient multiplicity rather than collapsing sampled patients through a pivot.
+- Weighted folds by the original non-OMI ECG count and retained incomplete replicates as explicit invalid outcomes.
+- Added synthetic regression tests for varying draws, patient multiplicity, fixed-seed replay, non-degenerate interval width, and explicit all-invalid handling.
+- Verified the corrected bootstrap in read-only mode against the frozen P3 predictions: all nine point estimates matched; a 2,000-replicate replay kept every interval endpoint within 0.00875 and retained the 2/9 intervals excluding zero.
+- Updated the README, code availability statement, release checklist, citation metadata, internal validation references, and Zenodo metadata for the v1.1.1 patch.
+- Corrected stale version-DOI and release-status text in the repository; the v1.1.0 Git tag and Zenodo record remain unchanged.
+
 ## 1.1.0 - Released
 
 - Updated the title to the final R2 manuscript title.

@@ -1,7 +1,7 @@
 {
   "title": "The Specificity Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction",
   "upload_type": "software",
-  "description": "Analysis code and provenance for the prespecified comparison of four ECG lead-information configurations for high-sensitivity detection of angiography-defined occlusion myocardial infarction. The package distinguishes the original pooled OOF development estimate, patient-disjoint A1/A2a calibration checks, same-source blind held-out evaluation, sampling-rate sensitivity, and post hoc matched-TPR analysis. It contains no patient data, hidden labels, model checkpoints, or row-level predictions.",
+  "description": "Analysis code and provenance for the prespecified comparison of four ECG lead-information configurations for high-sensitivity detection of angiography-defined occlusion myocardial infarction. Version 1.1.1 corrects the public P3 patient-cluster bootstrap helper introduced in v1.1.0 and updates release metadata. The package contains no patient data, hidden labels, model checkpoints, or row-level predictions.",
   "creators": [
     {
       "name": "Zheng, Mingming",
@@ -15,7 +15,7 @@
   ],
   "access_right": "open",
   "license": "MIT",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "keywords": [
     "occlusion myocardial infarction",
     "electrocardiography",

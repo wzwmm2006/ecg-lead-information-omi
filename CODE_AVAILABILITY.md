@@ -4,8 +4,10 @@ The analysis code, tests, configuration files, and provenance relevant to this s
 
 - GitHub: https://github.com/wzwmm2006/ecg-lead-information-omi
 - Zenodo concept DOI: `10.5281/zenodo.22046832`
+- Zenodo v1.1.0 DOI: `10.5281/zenodo.24126410`
+- Zenodo v1.1.0 record: https://zenodo.org/records/24126410
 - Zenodo v1.0.0 DOI: `10.5281/zenodo.22046833`
 
-Version 1.0.0 is archived under `10.5281/zenodo.22046833` and remains the currently published version until a v1.1.0 archive is released and verified. Version 1.1.0 adds readable and executable verification for the A1/A2a calibration analyses, P3 matched-TPR analysis, 100/250-Hz sensitivity analyses, and table and figure generation helpers. Its version-specific Zenodo DOI and Git tag SHA are recorded in the project release record after archival verification; cite a v1.1.0 DOI only once it is listed there.
+GitHub tag `v1.1.0` and Zenodo record `24126410` identify the published v1.1.0 source archive. The v1.1.1 patch corrects the public P3 bootstrap helper and release metadata; its version-specific DOI will be listed here after archival. Until then, cite `10.5281/zenodo.24126410` when using the v1.1.0 package. The v1.0.0 archive remains available at `10.5281/zenodo.22046833`.
 
 The package does not include patient data, ECG waveforms, model checkpoints, hidden labels, or row-level predictions. Data accessions are listed in `docs/data_access.md`. Citation metadata are in `CITATION.cff` and `.zenodo.json`.

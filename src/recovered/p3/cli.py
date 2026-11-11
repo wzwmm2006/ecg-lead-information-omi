@@ -12,9 +12,9 @@ from src.recovered.p3.matched_tpr import specificity_at_tpr
 
 
 ANALYSES = {
-    "A1_seedA": Path("10_gate2_r2/runs/RUN_20261110_A1A2a/fold{fold}/A1_seedA/{config}_eval_predictions.csv"),
-    "A1_seedB": Path("10_gate2_r2/runs/RUN_20261110_A1A2a/fold{fold}/A1_seedB/{config}_eval_predictions.csv"),
-    "A2a": Path("10_gate2_a2a_integration/runs/RUN_20261110_A2a_ONLY/fold{fold}/A2a/{config}_eval_predictions.csv"),
+    "A1_seedA": "10_gate2_r2/runs/RUN_20261110_A1A2a/fold{fold}/A1_seedA/{config}_eval_predictions.csv",
+    "A1_seedB": "10_gate2_r2/runs/RUN_20261110_A1A2a/fold{fold}/A1_seedB/{config}_eval_predictions.csv",
+    "A2a": "10_gate2_a2a_integration/runs/RUN_20261110_A2a_ONLY/fold{fold}/A2a/{config}_eval_predictions.csv",
 }
 
 
