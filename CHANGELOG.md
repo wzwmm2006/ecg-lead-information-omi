@@ -1,6 +1,6 @@
-﻿# Changelog
+# Changelog
 
-## 1.1.0 — Release candidate (2026-11-11)
+## 1.1.0 - Released
 
 - Updated the title to the final R2 manuscript title.
 - Separated original pooled OOF, patient-disjoint A1/A2a calibration, same-source held-out, 100/250-Hz sensitivity, and post hoc P3 evidence layers.

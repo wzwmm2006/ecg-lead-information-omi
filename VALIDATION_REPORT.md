@@ -1,4 +1,4 @@
-﻿# Validation Report — v1.1.0 Release Candidate
+# Validation Report - v1.1.0
 
 ## Data-free validation
 

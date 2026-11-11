@@ -1,6 +1,6 @@
 # ECG Lead Information for OMI: Reproducibility Package
 
-Version **1.1.0 (release candidate)**
+Version **1.1.0**. The version-specific Zenodo DOI will be recorded in `CODE_AVAILABILITY.md` and the project release record once the archive is published and verified.
 
 This repository contains the analysis code and provenance for:
 
@@ -82,7 +82,7 @@ The OOF class weights are computed once from the complete development frame befo
 
 ## Frozen revision workflows
 
-The original revision scripts are preserved under `provenance/frozen_scripts/` with path and hash records. Their outputs can be checked against `provenance/FROZEN_OUTPUT_HASHES.json`.
+The original revision scripts are preserved under `provenance/frozen_scripts/` as sanitized public copies, with a sanitization record and original/public hash fingerprints. Their outputs can be checked against `provenance/FROZEN_OUTPUT_HASHES.json`.
 
 ```bash
 bash scripts/verify_frozen_outputs.sh /path/to/authorized-frozen-project
@@ -115,4 +115,4 @@ Exact neural-network weights can vary across hardware, CUDA/cuDNN, and low-level
 
 ## Citation and license
 
-Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the concept DOI, version-specific DOI placeholder, repository, and software extent. The code is released under the MIT License.
+Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the concept DOI, repository, version, and software extent; the version-specific DOI is listed in `CODE_AVAILABILITY.md` once archival is verified. The code is released under the MIT License.
