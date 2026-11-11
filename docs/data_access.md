@@ -1,57 +1,52 @@
-# Data Access and Local Layout
+﻿# Data Access
 
-## Redistribution boundary
+The public package does not redistribute patient data, ECG waveforms, model weights, row-level predictions, private evaluator outputs, or hidden labels.
 
-The public repository contains code only. Do not commit or redistribute patient ECG waveforms, patient identifiers, source metadata, hidden test labels, Figshare raw files, PhysioNet raw files, restricted spreadsheets, provider-controlled evaluator responses, or institutional files.
+## Clinical dataset
 
-## Clinical acute coronary syndrome ECG data
-
-Obtain the dataset from Figshare under the provider's terms:
+Dataset: *A large-scale 12-lead electrocardiogram dataset for acute coronary syndrome prediction containing 19,955 ECGs*
 
 - DOI: `10.6084/m9.figshare.29925314`
+- Content required: released `train.csv`, `test.csv`, and the corresponding WFDB waveforms.
+- Access and reuse are governed by the provider's terms.
 
-The default configurations expect:
-
-```text
-data/
-  figshare/
-    train.csv
-    test.csv
-    waveforms/
-      00001.hea
-      00001.dat
-      ...
-```
-
-The development metadata must provide `ecg_row_record`, `Patient_id`, and `OMI`. The original analysis also used artery columns for exploratory summaries, but they are not required for the primary C0-C3 Spec95 workflow. The hidden-test metadata are used only to preserve provider row order during authorized local inference; hidden disease labels are neither expected nor read.
-
-Waveform basenames are derived from `ecg_row_record`, zero-padded to five digits, and loaded as WFDB records. Each readable clinical record must contain 12 leads, 5,000 samples per lead, and a sampling rate of 500 Hz.
-
-The frozen analysis excluded exactly two unreadable development records, `03228` and `14262`. The IDs are listed in the YAML configurations so the public pipeline reproduces the same cohort construction.
+The historical analysis cohort retained 17,958 readable development ECGs from 17,016 patients after excluding two unreadable records. It used 1,151 OMI ECGs from 1,139 OMI patients.
 
 ## STAFF III
 
-Obtain STAFF III Database v1.0.0 from PhysioNet under the provider's terms:
+STAFF III Database v1.0.0:
 
 - DOI: `10.13026/C20P4H`
+- PhysioNet page: https://physionet.org/content/staff-iii/1.0.0/
 
-The default configuration expects the provider release without renamed files:
+The package has no STAFF III data and does not rerun inference.
+
+## Expected local layout for OOF reproduction
+
+Paths in the YAML files are repository-relative:
 
 ```text
-data/
-  staffiii-1.0.0/
-    RECORDS
-    SHA256SUMS.txt
-    STAFF-III-Database-Annotations.xlsx
-    data/
-      001a.hea
-      001a.dat
-      ...
+data/figshare/train.csv
+data/figshare/test.csv
+data/figshare/waveforms/00001.dat
+data/figshare/waveforms/00001.hea
+...
+data/processed/train_waveforms.npy
+data/processed/train_waveforms.index.csv
 ```
 
-The STAFF III command verifies provider checksums when `SHA256SUMS.txt` is present. It reads the provider spreadsheet locally, applies the frozen event-selection rule, and writes patient-level outputs only to the ignored `outputs/` directory.
+Do not commit any of these files. They may contain controlled identifiers.
 
-## Alternative locations
+## Frozen-output checks against an existing authorized project
 
-Dataset paths may be changed in the YAML files, but they must remain relative to the repository root. Symbolic links inside `data/` may point to authorized storage when supported by the operating system. The configuration loader rejects absolute paths to prevent accidental publication of personal directories.
+If an investigator already has the frozen results in a private project directory, the source hashes can be checked without copying those files into the repository:
 
+```bash
+bash scripts/verify_frozen_outputs.sh /path/to/authorized-frozen-project
+```
+
+Only aggregate files described in `provenance/FROZEN_OUTPUT_HASHES.json` are checked. The hash manifest does not include raw waveforms or model checkpoints.
+
+## Website and archive checks
+
+The corresponding author must verify the live Figshare, PhysioNet, GitHub, and Zenodo records before submission. This package does not embed private evaluator credentials or invoke the evaluator.

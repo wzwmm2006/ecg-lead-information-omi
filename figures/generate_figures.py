@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 from io import BytesIO
 import logging
+import sys
+from pathlib import Path
 
 import matplotlib
 
@@ -10,6 +12,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.utils.config import load_config, repository_path
 from src.utils.logging import configure_logging
@@ -32,10 +36,11 @@ def study_design(output_dir) -> None:
     figure, axis = plt.subplots(figsize=(10.5, 5.5))
     axis.axis("off")
     nodes = [
-        (0.10, 0.62, "Labeled clinical TRAIN\n17,016 patients; 17,958 ECGs\nPatient-grouped 5-fold OOF\nEffect estimation + paired CI"),
-        (0.40, 0.62, "Frozen C0-C3 models\nPrespecified spatial\ninformation configurations\nHigh-sensitivity operating point"),
-        (0.71, 0.62, "Official blind held-out TEST\n1,995 ECGs\nAggregate directional confirmation\nNo adaptive resubmission"),
-        (0.40, 0.18, "STAFF III controlled occlusion\n73 patients; paired baseline/occlusion\nPhysiological triangulation\nNot clinical external validation"),
+        (0.10, 0.70, "Labeled clinical development\n17,016 patients; 17,958 ECGs\nPatient-grouped 5-fold OOF\nDevelopment estimate + paired CI"),
+        (0.40, 0.70, "Patient-disjoint calibration\nA1 seed A, A1 seed B, A2a\nNested inner calibration\nOuter-fold evaluation"),
+        (0.71, 0.70, "Final 80/20 fit and calibration\n1,995 held-out ECGs\nSame-source aggregate evaluation\nNot external validation"),
+        (0.25, 0.24, "100/250 Hz sensitivity\nSame patient folds\nSame-record OOF thresholds\nNot independent replication"),
+        (0.60, 0.24, "STAFF III controlled occlusion\n73 patients; paired baseline/occlusion\nPhysiological analysis\nNot clinical validation"),
     ]
     for x, y, label in nodes:
         axis.text(
@@ -50,8 +55,7 @@ def study_design(output_dir) -> None:
         )
     axis.annotate("", xy=(0.31, 0.62), xytext=(0.22, 0.62), xycoords="axes fraction", arrowprops={"arrowstyle": "->", "lw": 1.5})
     axis.annotate("", xy=(0.62, 0.62), xytext=(0.53, 0.62), xycoords="axes fraction", arrowprops={"arrowstyle": "->", "lw": 1.5})
-    axis.annotate("", xy=(0.50, 0.30), xytext=(0.50, 0.47), xycoords="axes fraction", arrowprops={"arrowstyle": "->", "lw": 1.5})
-    axis.text(0.50, 0.92, "Evidence architecture: cohorts were analyzed separately", ha="center", transform=axis.transAxes, fontsize=13, fontweight="bold")
+    axis.text(0.50, 0.93, "Evidence architecture: analyses were not pooled", ha="center", transform=axis.transAxes, fontsize=13, fontweight="bold")
     save_figure(figure, output_dir, "Figure_1_Study_Design")
 
 
@@ -86,7 +90,7 @@ def blind_confirmation(path, output_dir) -> None:
     axis.set_xticks(positions, [DISPLAY[item] for item in data.configuration])
     axis.set_ylim(0, 1.04)
     axis.set_ylabel("Aggregate metric")
-    axis.set_title("Official blind held-out test confirmation")
+    axis.set_title("Same-source blind held-out evaluation at frozen thresholds")
     axis.legend(frameon=False, loc="upper right")
     axis.spines[["top", "right"]].set_visible(False)
     save_figure(figure, output_dir, "Figure_3_Blind_Confirmation")
@@ -94,16 +98,19 @@ def blind_confirmation(path, output_dir) -> None:
 
 def staffiii_response(path, output_dir, seed: int) -> None:
     data = pd.read_csv(path)
-    data = data[data.configuration == "C0"].sort_values("patient_id")
+    data = data[data.configuration == "C0"].sort_values("patient_id").copy()
+    epsilon = 1e-6
+    baseline = np.clip(data.p_baseline.to_numpy(), epsilon, 1 - epsilon)
+    occlusion = np.clip(data.p_occlusion.to_numpy(), epsilon, 1 - epsilon)
+    data["delta_logit"] = np.log(occlusion / (1 - occlusion)) - np.log(baseline / (1 - baseline))
     figure, axis = plt.subplots(figsize=(7.8, 5.5))
-    jitter = np.random.default_rng(seed).normal(0, 0.025, len(data))
-    axis.scatter(np.zeros(len(data)) + jitter, data.p_baseline, color="#777777", s=18, alpha=0.72)
-    axis.scatter(np.ones(len(data)) + jitter, data.p_occlusion, color="#1f6f8b", s=18, alpha=0.72)
-    for baseline, occlusion, offset in zip(data.p_baseline, data.p_occlusion, jitter):
-        axis.plot([offset, 1 + offset], [baseline, occlusion], color="#9aa7ad", lw=0.5, alpha=0.5)
-    axis.set_xticks([0, 1], ["Baseline", "60-70 s during occlusion"])
-    axis.set_ylabel("Frozen C0 OMI probability")
-    axis.set_title("Within-patient C0 score response to controlled coronary occlusion")
+    rng = np.random.default_rng(seed)
+    axis.boxplot(data.delta_logit.to_numpy(), vert=False, widths=0.5, showfliers=False)
+    axis.scatter(data.delta_logit, rng.normal(1, 0.04, len(data)), color="#1f6f8b", s=14, alpha=0.7)
+    axis.axvline(0, color="#555555", lw=1, ls="--")
+    axis.set_yticks([])
+    axis.set_xlabel("Within-patient change in logit (occlusion - baseline)")
+    axis.set_title("STAFF III controlled-occlusion physiological response")
     axis.spines[["top", "right"]].set_visible(False)
     save_figure(figure, output_dir, "Figure_4_STAFFIII_Physiology")
 
@@ -134,7 +141,12 @@ def main() -> None:
     figure_dir = output_root / "figures"
     plt.rcParams.update({"font.size": 10, "font.family": "DejaVu Sans"})
     study_design(figure_dir)
-    high_sensitivity_tradeoff(output_root / "evaluation" / "oof_performance.csv", output_root / "evaluation" / "oof_uncertainty.csv", figure_dir)
+    performance_path = output_root / "evaluation" / "oof_performance.csv"
+    uncertainty_path = output_root / "evaluation" / "oof_uncertainty.csv"
+    if performance_path.exists() and uncertainty_path.exists():
+        high_sensitivity_tradeoff(performance_path, uncertainty_path, figure_dir)
+    else:
+        LOGGER.warning("Skipping Figure 2: local OOF aggregate files not found")
     blind_path = output_root / "evaluation" / "blind_aggregate.csv"
     if blind_path.exists():
         blind_confirmation(blind_path, figure_dir)

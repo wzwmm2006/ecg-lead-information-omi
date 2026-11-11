@@ -8,6 +8,7 @@ import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
 
 from src.evaluation.threshold import specificity_at_sensitivity
+from src.data.frozen import OOF_BOOTSTRAP_SEED
 from src.utils.config import load_config, repository_path
 from src.utils.logging import configure_logging
 from src.utils.provenance import write_run_metadata
@@ -77,7 +78,7 @@ def main() -> None:
     target = config["evaluation"]["target_sensitivity"]
     uncertainty_rows = []
     for position, config_id in enumerate(["C0", "C1", "C2", "C3"]):
-        samples = bootstrap_configuration(data, config_id, base_seed + position + 1, replicates, target)
+        samples = bootstrap_configuration(data, config_id, OOF_BOOTSTRAP_SEED, replicates, target)
         interval = np.quantile(samples, [0.025, 0.975], axis=0)
         uncertainty_rows.append(
             {
@@ -94,14 +95,25 @@ def main() -> None:
     pd.DataFrame(uncertainty_rows).to_csv(output_dir / "oof_uncertainty.csv", index=False)
     contrast_rows = []
     for reduced in ["C1", "C2", "C3"]:
-        values = paired_spec_bootstrap(data, reduced, base_seed + 99, replicates, target)
+        values = paired_spec_bootstrap(data, reduced, OOF_BOOTSTRAP_SEED, replicates, target)
         low, median, high = np.quantile(values, [0.025, 0.5, 0.975])
-        contrast_rows.append({"contrast": f"{reduced}-C0", "ci_low": low, "bootstrap_median": median, "ci_high": high})
+        labels = data.omi_label.to_numpy(dtype=int)
+        point = float(
+            specificity_at_sensitivity(labels, data[reduced].to_numpy(), target)[0]
+            - specificity_at_sensitivity(labels, data.C0.to_numpy(), target)[0]
+        )
+        contrast_rows.append({
+            "contrast": f"{reduced}-C0",
+            "delta_spec95": point,
+            "ci_low": low,
+            "ci_high": high,
+            "bootstrap_median": median,
+        })
         LOGGER.info("Completed %s-C0 paired bootstrap", reduced)
     pd.DataFrame(contrast_rows).to_csv(output_dir / "paired_spec95_contrasts.csv", index=False)
     write_run_metadata(
         output_dir / "bootstrap_run_metadata.json",
-        {"replicates": replicates, "individual_seed_rule": "base_seed + configuration_position + 1", "paired_seed": base_seed + 99},
+        {"replicates": replicates, "seed": OOF_BOOTSTRAP_SEED, "seed_rule": "frozen 20260912; shared across configurations; threshold re-estimated per replicate"},
     )
 
 

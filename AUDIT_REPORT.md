@@ -1,34 +1,28 @@
-# Existing Project Audit for Public Release
+﻿# Code Audit — v1.0.0 to v1.1.0
 
-Audit date: 2026-08-21
+## Scope
 
-The private Topic890 workspace was reviewed before this repository was created. The scientific source of truth was `gate_0e_spatial_pilot.py` for clinical OOF analysis, `gate_0f_finalize_and_submit.py` for frozen model finalization and threshold calibration, `gate_0g_staffiii_frozen_triangulation.py` for controlled-occlusion analysis, and `stage_1_evidence_lock.py` plus `stage_1_provenance.py` for result regeneration and provenance.
+This audit compares the frozen execution logic with the public v1.0.0 code. It does not retrain models or inspect hidden labels. The source files are retained under `provenance/frozen_scripts/`.
 
-## Reusable components
+## Findings
 
-- WFDB waveform loading and validation
-- fixed 500-to-50-Hz mean downsampling
-- per-record, per-lead normalization
-- C0-C3 lead selection
-- the three-block `TinyECGCNN`
-- AdamW training with patient and class weights
-- patient-grouped five-fold OOF prediction
-- patient-level 80/20 finalization and threshold calibration
-- Spec95 threshold selection and diagnostic metrics
-- individual and paired patient-level bootstrap procedures
-- STAFF III integrity checks, annotation parsing, event selection, resampling, derived limb leads, frozen inference, and within-patient analysis
-- final figure generation and SHA-256 provenance
+| Area | v1.0.0 public implementation | Historical frozen implementation | v1.1.0 treatment | Scientific impact |
+|---|---|---|---|---|
+| OOF class weighting | training-fold OMI prevalence | full development prevalence 1,151/17,958 | full-development prevalence implemented; history preserved | v1.0.0 public training recipe differs from frozen analysis; no frozen output changed |
+| WFDB validation | sampling rate only | waveform read and 12×5,000 shape check | validates lead names/order, units, 5,000-sample length, d_signal, finiteness | stronger input validation; no inference results changed |
+| OOF bootstrap seed | documented `base_seed+99`; configuration intervals used configuration-specific seeds | paired seed 20260912, threshold re-estimated per replicate | public paired bootstrap uses the frozen seed; frozen historical table retained | an exact seeded replay does not reproduce the frozen interval, so it is not claimed |
+| A1/A2a workflow | absent from v1.0.0 | nested inner split, locked threshold, outer evaluation | historical executors plus synthetic-tested split/centering helpers | deterministic decisions reproduced; neural-network refit not claimed |
+| P3 workflow | absent | empirical ROC interpolation and paired patient-within-fold bootstrap | deterministic interpolation helper; 60-row recomputation matches | exact interpolation verified; bootstrap not replayed |
+| 100/250 Hz | absent | fixed 5- and 2-sample block means; same folds | preprocessing helper, 20/10/4-ms window metadata, frozen-output hash check | training remains provenance-only |
+| Figure 1 | three boxes; no A1/A2a layer | R2 revised evidence architecture | five distinct evidence layers in generator | no numerical values changed |
+| Figure 4 | paired probability plot | R2 manuscript describes logit-change boxplot | generator now plots occlusion-minus-baseline logit | image/legend reconciled |
+| Held-out workflow | 80/20 finalization present | same 80/20, frozen thresholds and one-shot submission | finalization text retained; no evaluator command present | no TEST access; aggregate evidence hash checked |
+| C1/C3 interpretation | not explicit | algebraically related frontal-plane representations | README/Methods wording preserves this scope | no independent-energy interpretation |
 
-## Cleanup required
+## Methodological caveat
 
-The original scripts combined multiple stages, used absolute personal paths, and wrote into private data and result directories. The public implementation separates these responsibilities, resolves only repository-relative configured paths, adds logging and version capture, and prevents evaluator submission. No model architecture, preprocessing rule, threshold rule, seed, optimization setting, exclusion, or statistical procedure was changed.
+The original OOF bootstrap does not exactly reproduce the frozen percentile interval in the pinned environment. The bootstrap code is documented, but its interval is classified as historical output, not as an exact executable reproduction. No attempt was made to tune seeds, resampling order, or finalization to force agreement.
 
-## Excluded private material
+## Integrity boundary
 
-The workspace contains raw Figshare waveforms and metadata, the STAFF III provider release, patient and record identifiers, hidden-test metadata and predictions, private evaluator responses, fold and calibration assignments, patient-level OOF and STAFF III scores, trained checkpoints, institutional files, and prior submission packages. None is included in this repository.
-
-## Missing documentation addressed here
-
-The private workspace lacked a single public installation guide, provider-neutral data layout, configuration schema, controlled-output warning, end-to-end command sequence, data-free dry run, environment lock, code citation, license, release metadata, Zenodo metadata, and public source manifest. These are supplied in `README.md`, `docs/`, the environment files, `CITATION.cff`, `.zenodo.json`, and `provenance/`.
-
-The detailed pre-construction inventory remains in the parent project as `AUDIT_REPORT.md` and identifies every primary script, manifest class, frozen scientific constant, and public-release disposition.
+No patient data, waveforms, checkpoints, or per-record predictions are included in the public release. The frozen scripts retain original local absolute paths because they are historical evidence, not portable entry points. Portable functionality is implemented under `src/recovered/` and tested with synthetic data.

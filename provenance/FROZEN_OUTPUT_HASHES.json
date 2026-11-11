@@ -1,0 +1,82 @@
+{
+  "03_results/gate_0e_configuration_performance.csv": {
+    "sha256": "679319ee8803c3896882483da7bd7b5c2a514efb6ebb90c4c3f39fe062bb81d3",
+    "bytes": 2534,
+    "description": "Original pooled OOF configuration metrics"
+  },
+  "03_results/gate_0e_paired_contrasts.csv": {
+    "sha256": "2f1ccd13ae9f49bc884437a9ab77da6536550ea5d9e3c9e6c93e3a82f4f437e8",
+    "bytes": 386,
+    "description": "Original pooled OOF paired specificity contrasts"
+  },
+  "revision_r2_min/AUPRC_CI_RESULTS.csv": {
+    "sha256": "4dfdc7bd7d5b044305e4861bf7caa5950e2f2fb536cc45c664280c9968ae777c",
+    "bytes": 416,
+    "description": "AUPRC 95% interval table for Table A1"
+  },
+  "10_gate2_r2/GATE2_EVIDENCE_EXPORT_20261110/02_a1_aggregate/A1_ALL_FOLDS_LONG.csv": {
+    "sha256": "b21a5c92b2fdecace27320045e13fadd9001f197f2f5325bac6eb34fddf10dc8",
+    "bytes": 13746,
+    "description": "A1 40 fold/config rows"
+  },
+  "10_gate2_r2/GATE2_EVIDENCE_EXPORT_20261110/02_a1_aggregate/A1_POOLED_LOCKED_THRESHOLD.csv": {
+    "sha256": "bf1232e1823f910c07fe80aba332f2e664ba47e49d86b864ff89ab2476f3dcc1",
+    "bytes": 643,
+    "description": "A1 pooled locked-threshold estimates"
+  },
+  "10_gate2_r2/GATE2_EVIDENCE_EXPORT_20261110/02_a1_aggregate/A1_PAIRED_BOOTSTRAP_LOCKED_THRESHOLD.csv": {
+    "sha256": "9c8c16547f68c76225d1bdc6e6ec2f730237f6c7a103c5452e2f203fb3bce0a4",
+    "bytes": 540,
+    "description": "A1 paired locked-threshold intervals"
+  },
+  "10_gate2_a2a_integration/runs/RUN_20261110_A2a_ONLY/A2A_POOLED_LOCKED_METRICS.csv": {
+    "sha256": "98f4d65481a14043684345d8a8b221d2bfbac804b438bc258be688cc3e11f161",
+    "bytes": 392,
+    "description": "A2a pooled locked-threshold estimates"
+  },
+  "10_gate2_a2a_integration/runs/RUN_20261110_A2a_ONLY/A2A_PERFOLD_LOCKED_METRICS.csv": {
+    "sha256": "c6a58940637e942896c47f66d4b7ca314502d462017e57893fb6ccc6cd487464",
+    "bytes": 2172,
+    "description": "A2a 20 fold/config rows"
+  },
+  "10_gate2_a2a_integration/runs/RUN_20261110_A2a_ONLY/A2A_PAIRED_PATIENT_BOOTSTRAP.csv": {
+    "sha256": "cea722ccff8ab0201c003e3f1ba95510067fecced141ed019529eb961ee3d931",
+    "bytes": 525,
+    "description": "A2a paired cluster intervals"
+  },
+  "12_p3_matched_sensitivity/P3_MATCHED_SENSITIVITY_RESULTS.csv": {
+    "sha256": "040640490000167edcac9d08efffd02e78c92e9e2484d5fa6233f1bf0b00e2b3",
+    "bytes": 12150,
+    "description": "P3 60 fold/config rows"
+  },
+  "12_p3_matched_sensitivity/P3_MATCHED_SENSITIVITY_BOOTSTRAP.csv": {
+    "sha256": "7a6e085c711f99b931c03c221d1109ac961df1de9a0fa3805788f6e8887d283d",
+    "bytes": 1522,
+    "description": "P3 nine bootstrap intervals"
+  },
+  "12_p3_matched_sensitivity/P3_FOLD_WEIGHTED_CONTRASTS.csv": {
+    "sha256": "b71627e9cc65fa9b912bcda84d1ecdb3e1bc677a410b19cebf59b6fa0c59d12d",
+    "bytes": 1418,
+    "description": "P3 weighted contrasts"
+  },
+  "revision_r2_sampling/SAMPLING_RATE_SENSITIVITY_RESULTS.csv": {
+    "sha256": "753e7166489deae90a3523fca368f21de00edeccfb0fd35b3b1d4bf3515106cb",
+    "bytes": 1234,
+    "description": "100/250 Hz configuration metrics"
+  },
+  "revision_r2_sampling/SAMPLING_BOOTSTRAP_RESULTS.csv": {
+    "sha256": "53eb2ae1ed690961fb2bf830d005517c6cccf026e717159f5be04d14f0d72015",
+    "bytes": 741,
+    "description": "100/250 Hz paired intervals"
+  },
+  "03_results/FINAL_TABLE_3_BLIND_TEST.csv": {
+    "sha256": "5d737ca850848a1de4c89cad6179e79576794940a84ffc2d609425699cb8bbd5",
+    "bytes": 1151,
+    "description": "Same-source held-out aggregate metrics"
+  },
+  "02_data/metadata_raw/CSV/train.csv": {
+    "sha256": "15fdb9b576da88acc31d07612e457848a3d3502ea4955ffd3fed845968310907",
+    "bytes": 1448403,
+    "description": "Source clinical metadata used for baseline and denominator audit"
+  }
+}

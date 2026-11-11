@@ -14,6 +14,8 @@ from src.utils.logging import configure_logging
 
 LOGGER = logging.getLogger(__name__)
 CANONICAL_LEADS = ["I", "II", "III", "aVR", "aVL", "aVF", "V1", "V2", "V3", "V4", "V5", "V6"]
+SIG_NAMES = ["I", "II", "III", "AVR", "AVL", "AVF", "V1", "V2", "V3", "V4", "V5", "V6"]
+SIG_UNITS = ["mV"] * 12
 
 
 def record_id(value: object) -> str:
@@ -42,6 +44,25 @@ def prepare_metadata(metadata_path: Path, split: str, excluded: set[str]) -> pd.
     return frame
 
 
+def validate_wfdb_record(record, ecg_id: str) -> None:
+    """Validate lead identity/order, sample length, units, and physical-signal status."""
+    if float(record.fs) != 500.0:
+        raise ValueError(f"{ecg_id}: expected 500 Hz, received {record.fs}")
+    if int(record.sig_len) != 5000:
+        raise ValueError(f"{ecg_id}: expected 5000 samples, received {record.sig_len}")
+    if list(record.sig_name) != SIG_NAMES:
+        raise ValueError(f"{ecg_id}: unexpected lead names/order: {record.sig_name}")
+    if list(record.units) != SIG_UNITS:
+        raise ValueError(f"{ecg_id}: expected mV units, received {record.units}")
+    if record.d_signal and int(record.d_signal) not in (0, -1):
+        raise ValueError(f"{ecg_id}: unexpected d_signal={record.d_signal}")
+    signal = np.asarray(record.p_signal)
+    if signal.shape != (5000, 12):
+        raise ValueError(f"{ecg_id}: expected p_signal shape (5000, 12), received {signal.shape}")
+    if not np.isfinite(signal).all():
+        raise ValueError(f"{ecg_id}: p_signal contains non-finite values before frozen normalization")
+
+
 def preprocess(config: dict, split: str) -> tuple[Path, Path]:
     metadata_path = repository_path(config, f"{split}_metadata")
     output_path = repository_path(config, f"processed_{split}")
@@ -51,8 +72,7 @@ def preprocess(config: dict, split: str) -> tuple[Path, Path]:
     output = np.empty((len(frame), 12, config["data"]["output_samples"]), dtype=np.float32)
     for index, ecg_id in enumerate(frame.ecg_id):
         record = wfdb.rdrecord(str(waveform_dir / ecg_id))
-        if float(record.fs) != float(config["data"]["sampling_rate_hz"]):
-            raise ValueError(f"{ecg_id}: expected 500 Hz, received {record.fs}")
+        validate_wfdb_record(record, ecg_id)
         signal = np.asarray(record.p_signal, dtype=np.float32).T
         output[index] = downsample_and_normalize(
             signal,

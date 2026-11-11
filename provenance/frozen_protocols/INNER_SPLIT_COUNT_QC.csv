@@ -1,0 +1,6 @@
+outer_fold,outer_train_patients,outer_train_omi_patients,outer_train_omi_ecg,inner_fit_patients,inner_fit_omi_patients,inner_fit_omi_ecg,inner_fit_non_omi_patients,inner_fit_non_omi_ecg,inner_cal_patients,inner_cal_omi_patients,inner_cal_omi_ecg,inner_cal_non_omi_patients,inner_cal_non_omi_ecg,outer_eval_patients,outer_eval_omi_patients,outer_eval_omi_ecg,outer_eval_non_omi_patients,outer_eval_non_omi_ecg,inner_fit_ecg,inner_cal_ecg,outer_eval_ecg
+0,13613,911,921,10890,729,737,10237,10763,2723,182,184,2557,2683,3403,228,230,3198,3361,11500,2867,3591
+1,13609,911,921,10887,729,739,10231,10756,2722,182,182,2561,2690,3407,228,230,3200,3361,11495,2872,3591
+2,13614,910,920,10891,728,733,10234,10738,2723,182,187,2560,2707,3402,229,231,3198,3362,11471,2894,3593
+3,13618,912,921,10894,730,738,10234,10756,2724,182,183,2562,2690,3398,227,230,3196,3361,11494,2873,3591
+4,13610,912,921,10888,730,737,10237,10767,2722,182,184,2555,2678,3406,227,230,3200,3362,11504,2862,3592

@@ -1,6 +1,6 @@
-study:
+﻿study:
   name: ecg_lead_information_omi
-  version: 1.0.0
+  version: 1.1.0
   base_seed: 20260813
 configuration:
   id: C0

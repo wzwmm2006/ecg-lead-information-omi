@@ -1,27 +1,41 @@
-# Release Validation Report
+﻿# Validation Report — v1.1.0 Release Candidate
 
-Validation date: 2026-08-21
+## Data-free validation
 
-## Passed checks
+| Check | Result |
+|---|---|
+| Python syntax compilation of `src/**/*.py` | PASS |
+| Import of data, model, evaluation, recovered, and figure modules | PASS |
+| Unit/synthetic tests | 11 passed |
+| Model forward dry run | PASS |
+| Figure rendering dry run | PASS |
+| Metadata YAML/JSON parsing | PASS |
 
-- Repository structure: all requested top-level files, configurations, source modules, workflow scripts, figure generator, documentation, example configuration, release metadata, and provenance specification are present.
-- Python syntax: all 19 Python files compiled in memory without errors.
-- Imports: data, model, training, evaluation, STAFF III, figure, and provenance modules imported successfully.
-- Core tests: 4/4 passed for C0-C3 lead indices, preprocessing shape and scaling, threshold selection, and CNN output shape.
-- Configuration validation: C0-C3 resolve to the frozen lead indices and all configured filesystem paths are relative.
-- Model dry run: the example configuration produced a finite two-record synthetic forward pass with input shape `(2, 12, 500)` and output shape `(2,)`.
-- Figure dry run: Matplotlib rendered a synthetic PNG in memory.
-- Dependency resolution: `pip install --dry-run -r requirements.txt` resolved every pinned dependency without changing the environment.
-- Metadata parsing: `CITATION.cff`, `environment.yml`, all YAML configurations, and `.zenodo.json` parsed successfully.
-- Release-boundary scan: no personal absolute path, private evaluator endpoint, patient data file, trained checkpoint, waveform file, or patient-level output is present.
+## Frozen-output verification
 
-## Environment notes
+`src.evaluation.frozen_verification` checked the 16 files in `provenance/FROZEN_OUTPUT_HASHES.json`. All 16 matched. This result is classified `FROZEN_OUTPUT_MATCHED`.
 
-The validation host used Python 3.14.3 with NumPy 2.4.2, pandas 2.3.3, SciPy 1.17.1, scikit-learn 1.8.0, Torch 2.13.0+cu126, WFDB 4.3.1, and Matplotlib 3.11.1. The release environment pins the frozen reference Python 3.12.10 and Torch 2.12.1 environment. Dependency resolution confirmed that the pinned packages are available, but the current host environment was not modified.
+## Deterministic result checks
 
-`bash` was not installed on the Windows validation host, so `bash -n` could not be executed. The three shell files are thin POSIX Bash wrappers around Python entry points; the underlying entry points passed syntax, import, and dry-run checks.
+| Check | Classification | Result |
+|---|---|---|
+| Original OOF AUROC/AUPRC from stored probabilities | EXECUTABLE_VERIFIED + FROZEN_OUTPUT_MATCHED | all point estimates match exactly or to floating-point precision |
+| A1/A2a 60 rows: TP/FP/TN/FN recomputed from probabilities at stored thresholds | EXECUTABLE_VERIFIED | all 60 counts match; zero deltas |
+| A1/A2a sensitivity range | EXECUTABLE_VERIFIED | 0.900000 to 0.982684 |
+| P3 60 rows: ROC interpolation at TPR 0.95 | EXECUTABLE_VERIFIED + FROZEN_OUTPUT_MATCHED | maximum absolute difference 8.33e-17 |
+| P3 nine bootstrap intervals | PROVENANCE_ONLY | frozen intervals retained; not replayed |
+| Original OOF paired bootstrap interval | NOT_VERIFIED | patient/threshold code implemented; the exact frozen percentile interval was not reproduced and is not claimed |
+| 100/250 Hz results | FROZEN_OUTPUT_MATCHED (output files); PROVENANCE_ONLY (training) | output hashes match; no retraining |
+| Held-out aggregate metrics | FROZEN_OUTPUT_MATCHED for source file | no evaluator access |
+| STAFF III | PROVENANCE_ONLY | no inference |
 
-## Checks intentionally not run
+## Release meaning
 
-No patient-data preprocessing, model training, hidden-test inference, bootstrap re-estimation, STAFF III inference, or manuscript-result recalculation was run. Those operations require controlled datasets and would constitute a scientific rerun outside this repository-packaging task. Authorized users can execute them using the documented workflow.
+A `FROZEN_OUTPUT_MATCHED` result shows that an authorized local file is byte-identical to the hash recorded for the revision. It does not prove that a fresh neural-network training run would reproduce the file.
 
+## Remaining release conditions
+
+- Author approval of the candidate archive.
+- Resolution of the historical v1.0.0 release identity in GitHub and Zenodo.
+- Verification of the concept and version DOI records.
+- Verification that the GitHub/Zenodo archive contains the same commit and versioned metadata.

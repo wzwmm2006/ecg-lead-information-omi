@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold, train_test_split
 
 from src.data.preprocessing import prepare_metadata
+from src.data import frozen
 from src.utils.config import repository_path
 
 
@@ -38,10 +39,18 @@ def load_processed(config: dict, split: str) -> tuple[pd.DataFrame, np.ndarray]:
 
 
 def patient_training_weights(frame: pd.DataFrame) -> np.ndarray:
+    """Return frozen training weights for the supplied training subset.
+
+    The v1.0.0 public implementation calculated class prevalence from the
+    training fold and is preserved in git history and the audit documents.
+    The original frozen analysis calculated class weights from the full
+    development set (1,151 OMI / 17,958 ECG). This function implements the
+    frozen full-development rule and requires that prevalence explicitly.
+    """
     counts = frame.patient_id.value_counts()
     patient_weight = frame.patient_id.map(1 / counts).to_numpy()
     labels = frame.omi.to_numpy()
-    prevalence = labels.mean()
+    prevalence = float(frozen.full_development_prevalence)
     class_weight = np.where(labels == 1, 1.0 / prevalence, 1.0 / (1.0 - prevalence))
     return patient_weight * class_weight
 
@@ -66,4 +75,46 @@ def finalization_split(frame: pd.DataFrame, calibration_fraction: float, seed: i
     )
     fit_set = set(fit_patients.patient_id)
     return frame.patient_id.isin(fit_set).to_numpy()
+
+
+def inner_split(
+    frame: pd.DataFrame,
+    outer_fold: int,
+    fold_column: str = "fold",
+    calibration_fraction: float = 0.2,
+    seed: int = 20260813,
+) -> pd.DataFrame:
+    """Return the frozen patient-disjoint A1/A2a roles for one outer fold.
+
+    Outer-evaluation patients are excluded entirely from inner fitting and
+    calibration. The split is generated from outer-training patients only.
+    """
+    required = {"patient_id", "omi", fold_column}
+    if not required.issubset(frame.columns):
+        raise ValueError(f"Missing columns: {sorted(required - set(frame.columns))}")
+    if not frame.groupby("patient_id")[fold_column].nunique().eq(1).all():
+        raise ValueError("Each patient must map to exactly one outer fold")
+    if not frame.groupby("patient_id")["omi"].nunique().eq(1).all():
+        raise ValueError("Patient OMI status must be consistent across records")
+    patient_frame = (
+        frame[["patient_id", "omi", fold_column]]
+        .groupby("patient_id", as_index=False)
+        .agg(omi=("omi", "max"), fold=(fold_column, "first"))
+    )
+    outer = patient_frame[patient_frame.fold == outer_fold]
+    training = patient_frame[patient_frame.fold != outer_fold]
+    if set(outer.patient_id) & set(training.patient_id):
+        raise RuntimeError("outer-fold patient leakage")
+    fit, calibration = train_test_split(
+        training,
+        test_size=calibration_fraction,
+        random_state=seed + 1000 + outer_fold,
+        stratify=training.omi,
+    )
+    fit = fit.assign(inner_role="INNER_MODEL_FIT")
+    calibration = calibration.assign(inner_role="INNER_THRESHOLD_CALIBRATION")
+    outer = outer.assign(inner_role="OUTER_EVALUATION")
+    roles = pd.concat([fit, calibration, outer], ignore_index=True)
+    roles["outer_fold"] = int(outer_fold)
+    return roles.sort_values(["inner_role", "patient_id"]).reset_index(drop=True)
 

@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
-REPOSITORY_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${REPOSITORY_ROOT}"
-
-python -m src.evaluation.metrics --config configs/c0_12lead.yaml
+for config in configs/c0_12lead.yaml configs/c1_limb.yaml configs/c2_precordial.yaml configs/c3_i_ii_iii.yaml; do
+  python -m src.evaluation.metrics --config "$config"
+done
 python -m src.evaluation.bootstrap --config configs/c0_12lead.yaml
-

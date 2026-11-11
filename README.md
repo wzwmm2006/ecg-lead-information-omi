@@ -1,52 +1,56 @@
 # ECG Lead Information for OMI: Reproducibility Package
 
-Version 1.0.0
+Version **1.1.0 (release candidate)**
 
-This repository contains the analysis code for "The Diagnostic Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction." It does not contain clinical ECGs, patient metadata, hidden labels, or trained checkpoints.
+This repository contains the analysis code and provenance for:
 
-## Study overview
+*The Specificity Cost of Reducing ECG Lead Information for High-Sensitivity Detection of Occlusion Myocardial Infarction*
 
-The study evaluated AI ECG detection of angiography-defined occlusion myocardial infarction (OMI) and compared the diagnostic cost of four prespecified ECG lead-information configurations:
+It does not contain clinical ECGs, patient metadata, hidden labels, model checkpoints, or row-level predictions.
+
+## Study question and evidence layers
+
+The study compares four prespecified ECG lead-information configurations for AI detection of source-defined angiography-linked occlusion myocardial infarction (OMI):
 
 | Configuration | Input information |
-| --- | --- |
-| C0 | Standard 12-lead ECG |
-| C1 | Six limb-information leads: I, II, III, aVR, aVL, aVF |
-| C2 | Six precordial leads: V1-V6 |
+|---|---|
+| C0 | Standard 12 leads |
+| C1 | Six displayed limb leads: I, II, III, aVR, aVL, aVF |
+| C2 | V1-V6 |
 | C3 | I, II, III |
 
-The primary endpoint was specificity at approximately 95% sensitivity (Spec95). The evidence architecture comprised:
+C1 and C3 are algebraically related frontal-plane representations. The package does **not** treat them as independent information doses.
 
-1. Patient-grouped five-fold out-of-fold (OOF) analysis for primary effect estimation.
-2. Frozen blind held-out confirmation using provider-controlled labels and aggregate evaluation.
-3. STAFF III controlled coronary occlusion analysis of within-patient physiological score changes.
+The results are organized by threshold source and are not pooled:
 
-The code preserves the reported preprocessing, model architecture, random seeds, optimization settings, threshold rule, and bootstrap procedures. It is a reproducibility implementation, not a revised model or re-analysis.
+1. **Original pooled OOF** — threshold selected and evaluated on the same pooled out-of-fold records. This is a development estimate; its interval includes threshold re-estimation.
+2. **A1** — patient-disjoint inner calibration and locked threshold, evaluated once on each outer fold. Two training seeds are included.
+3. **A2a** — the same nested design with configuration-local amplitude-preserving preprocessing (one seed).
+4. **Same-source blind held-out** — final models fit on a frozen 80/20 model-fit/threshold-calibration split and evaluated once by the provider. Aggregate metrics only; not external validation.
+5. **100/250 Hz** — within-rate OOF sensitivity analyses with same-record thresholds, not independent replication.
+6. **P3** — post hoc empirical-ROC interpolation at TPR 0.95 with paired patient-within-fold bootstrap; not a deployable threshold.
 
 ## Data access
 
 The datasets are not included in this repository.
 
-The acute coronary syndrome ECG dataset is available through Figshare:  
-doi:10.6084/m9.figshare.29925314
+- Acute coronary syndrome ECG dataset: doi:10.6084/m9.figshare.29925314
+- STAFF III Database v1.0.0: doi:10.13026/C20P4H
 
-STAFF III Database v1.0.0 is available through PhysioNet:  
-doi:10.13026/C20P4H
+Users must obtain access under the original providers' terms. Hidden TEST labels and private evaluator responses are not redistributed.
 
-Users must obtain access according to the original data provider policies.
-
-See [docs/data_access.md](docs/data_access.md) for the expected local layout. Hidden test labels and private evaluator responses are not required for OOF reproduction and are not redistributed.
+See [docs/data_access.md](docs/data_access.md) for the expected local layout.
 
 ## Installation
 
-Python 3.12.10 is the frozen reference interpreter. Create either environment from the repository root:
+The frozen reference interpreter is Python 3.12.10.
 
 ```bash
 conda env create -f environment.yml
 conda activate ecg-lead-omi-reproducibility
 ```
 
-or:
+Or:
 
 ```bash
 python -m venv .venv
@@ -55,94 +59,60 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-On Windows PowerShell, activate the virtual environment with `.venv\Scripts\Activate.ps1`.
-
-## Reproduction workflow
-
-All paths in the supplied YAML files are relative to the repository root.
-
-1. Install the environment.
-2. Obtain the authorized Figshare and PhysioNet datasets.
-3. Place or link the datasets under the paths described in `docs/data_access.md`, or edit the relative paths in each YAML file.
-4. Preprocess the clinical development data:
-
-   ```bash
-   python -m src.data.preprocessing --config configs/c0_12lead.yaml --split train
-   ```
-
-5. Train the four patient-grouped OOF model sets:
-
-   ```bash
-   bash scripts/train_models.sh oof
-   ```
-
-6. Calculate Spec95, global metrics, and paired bootstrap intervals:
-
-   ```bash
-   bash scripts/evaluate_models.sh
-   ```
-
-7. Train the frozen 80/20 model-fit/calibration models when local held-out inference or STAFF III analysis is required:
-
-   ```bash
-   bash scripts/train_models.sh final
-   ```
-
-8. Run STAFF III analysis using authorized local records and the locally generated C0-C3 checkpoints:
-
-   ```bash
-   python -m src.evaluation.staffiii --config configs/c0_12lead.yaml
-   ```
-
-9. Generate figures from locally produced aggregate analysis files:
-
-   ```bash
-   bash scripts/reproduce_figures.sh
-   ```
-
-Complete command descriptions, output files, controlled-output warnings, and reproducibility limits are in [docs/reproducibility.md](docs/reproducibility.md).
-
-Release validation results are recorded in [VALIDATION_REPORT.md](VALIDATION_REPORT.md), and publication steps are listed in [docs/release_checklist.md](docs/release_checklist.md).
-
 ## Data-free validation
 
-Validate configuration loading, model construction, imports, and a synthetic forward pass without patient data:
-
 ```bash
+python -m pytest -q
 python -m src.training.train --config examples/config_example.yaml --dry-run
 python figures/generate_figures.py --dry-run
+python -m src.evaluation.frozen_verification --help
 ```
 
-Dry runs do not train a model, estimate performance, or reproduce manuscript results.
+The data-free tests do not train a model or reproduce manuscript results.
+
+## Original OOF workflow
+
+```bash
+python -m src.data.preprocessing --config configs/c0_12lead.yaml --split train
+bash scripts/train_models.sh oof
+bash scripts/evaluate_models.sh
+```
+
+The public OOF code now uses the frozen full-development class-prevalence rule. The v1.0.0 training-fold rule was an implementation discrepancy; see [provenance/V1_0_0_RELEASE_IDENTITY.md](provenance/V1_0_0_RELEASE_IDENTITY.md).
+
+## Frozen revision workflows
+
+The original revision scripts are preserved under `provenance/frozen_scripts/` with path and hash records. Their outputs can be checked against `provenance/FROZEN_OUTPUT_HASHES.json`.
+
+```bash
+bash scripts/verify_frozen_outputs.sh /path/to/authorized-frozen-project
+bash scripts/recover_p3_tables.sh /path/to/authorized-frozen-project
+bash scripts/summarize_sampling_sensitivity.sh /path/to/authorized-frozen-project
+```
+
+A matching hash is classified `FROZEN_OUTPUT_MATCHED`. It does not mean that a model was retrained. Executable helpers for synthetic and deterministic checks are classified separately in `R2_V1_1_VALIDATION_REPORT.md`. Do not publish patient identifiers, predictions, checkpoints, or local run metadata.
+
+## Figures
+
+`python figures/generate_figures.py` reads authorized local aggregate files. Figure 1 separates the evidence layers. Figure 2 shows the development OOF specificity. Figure 3 is generated only from an authorized same-source held-out aggregate file. Figure 4 shows the within-patient logit change from STAFF III baseline to occlusion.
 
 ## Repository contents
 
-- `configs/`: one frozen YAML configuration for each C0-C3 lead set
-- `src/data/`: clinical WFDB loading and deterministic preprocessing
-- `src/models/`: frozen CNN definition
-- `src/training/`: patient-grouped OOF and final model training
-- `src/evaluation/`: metrics, threshold, bootstrap, and STAFF III analysis
-- `figures/`: figure generation from local aggregate outputs
-- `scripts/`: shell wrappers for the full workflow
-- `docs/`: data access and reproducibility instructions
-- `provenance/`: frozen analysis specification and source-code checksums
+- `configs/`: frozen C0-C3 configurations
+- `src/data/`: preprocessing, WFDB validation, frozen-label constants
+- `src/models/`: fixed CNN definition
+- `src/training/`: OOF and finalization code
+- `src/evaluation/`: metrics, threshold selection, bootstrap, held-out aggregate utilities
+- `src/recovered/`: auditable A1/A2a, P3, and sampling helpers; historical scripts remain under `provenance/`
+- `figures/`: figure generation
+- `scripts/`: workflow wrappers
+- `tests/`: data-free unit and synthetic tests
+- `provenance/`: release identity, frozen scripts, protocols, and output hashes
 
-## Reproducibility and privacy boundary
+## Reproducibility boundary
 
-Local outputs can contain patient or record identifiers and must remain under ignored `outputs/`, `models/`, and `data/` directories. Do not commit these directories. The software logs version and configuration information but does not upload data or contact the private blind evaluator.
+Exact neural-network weights can vary across hardware, CUDA/cuDNN, and low-level numerical kernels even with fixed seeds. The package records versions and provenance, but it does not claim byte-identical refits or reproduction of hidden TEST. Patient-level intermediates must remain in ignored local directories.
 
-Deep-learning results can vary across hardware and low-level numerical libraries even with fixed random seeds. The reference versions are pinned, and each command records run metadata to support comparison with the frozen analysis.
+## Citation and license
 
-## Citation
-
-The reproducibility package for this study is archived on Zenodo:
-
-https://doi.org/10.5281/zenodo.22046832
-
-Please cite the Zenodo release when using this software package. Citation metadata are provided in `CITATION.cff`.
-
-GitHub repository: https://github.com/wzwmm2006/ecg-lead-information-omi
-
-## License
-
-The code is released under the MIT License.
+Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the concept DOI, version-specific DOI placeholder, repository, and software extent. The code is released under the MIT License.

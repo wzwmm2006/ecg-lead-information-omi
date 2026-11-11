@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 import torch
 
 from src.data.preprocessing import downsample_and_normalize
@@ -39,6 +40,40 @@ class CoreReproducibilityTests(unittest.TestCase):
         self.assertEqual(threshold, 0.9)
         self.assertEqual(sensitivity, 0.5)
         self.assertEqual(specificity, 1.0)
+
+    def test_a1_a2a_weights_use_full_development_prevalence(self) -> None:
+        from src.data.dataset import patient_training_weights
+        from src.data.frozen import full_development_prevalence
+
+        frame = pd.DataFrame(
+            {
+                "patient_id": ["p1", "p1", "p2", "p3"],
+                "omi": [1, 1, 0, 0],
+            }
+        )
+        weights = patient_training_weights(frame)
+        expected_omi = 0.5 * (1.0 / full_development_prevalence)
+        expected_non_omi = 1.0 * (1.0 / (1.0 - full_development_prevalence))
+        self.assertAlmostEqual(weights[0], expected_omi)
+        self.assertAlmostEqual(weights[2], expected_non_omi)
+
+    def test_wfdb_validation_rejects_wrong_lead_order(self) -> None:
+        record = type(
+            "Record",
+            (),
+            {
+                "fs": 500,
+                "sig_len": 5000,
+                "sig_name": ["II", "I", "III", "AVR", "AVL", "AVF", "V1", "V2", "V3", "V4", "V5", "V6"],
+                "units": ["mV"] * 12,
+                "d_signal": 0,
+                "p_signal": np.zeros((5000, 12), dtype=np.float32),
+            },
+        )()
+        from src.data.preprocessing import validate_wfdb_record
+
+        with self.assertRaises(ValueError):
+            validate_wfdb_record(record, "test")
 
     def test_model_output_shape(self) -> None:
         model = TinyECGCNN(3).eval()
