@@ -1,6 +1,6 @@
 # ECG Lead Information for OMI: Reproducibility Package
 
-Patch version **1.1.1**. The published v1.1.0 archive is available at `10.5281/zenodo.24126410`. Version 1.1.1 corrects the public P3 patient-cluster bootstrap helper, adds regression tests for sampling and patient multiplicity, and updates release metadata. Its version-specific DOI will be recorded here after archival.
+Published version **1.1.1**. The v1.1.1 archive is available at `10.5281/zenodo.24132879`. It corrects the public P3 patient-cluster bootstrap helper, adds regression tests for sampling and patient multiplicity, and updates release metadata.
 
 This repository contains the analysis code and provenance for:
 
@@ -115,4 +115,4 @@ Exact neural-network weights can vary across hardware, CUDA/cuDNN, and low-level
 
 ## Citation and license
 
-Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the v1.1.0 version DOI and the concept DOI, repository, version, and software extent; `CODE_AVAILABILITY.md` lists the published archival identifiers and will list the v1.1.1 DOI after archival. The code is released under the MIT License.
+Cite the Zenodo version DOI corresponding to the release used. `CITATION.cff` carries the v1.1.1 version DOI and the concept DOI, repository, version, and software extent; `CODE_AVAILABILITY.md` lists the published archival identifiers. The code is released under the MIT License.

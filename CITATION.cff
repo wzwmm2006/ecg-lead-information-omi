@@ -10,12 +10,12 @@ authors:
   - family-names: Liu
     given-names: Liang
 repository-code: "https://github.com/wzwmm2006/ecg-lead-information-omi"
-doi: "10.5281/zenodo.24126410"
+doi: "10.5281/zenodo.24132879"
 license: MIT
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.24126410"
-    description: "Zenodo version DOI for the v1.1.0 archived release"
+    value: "10.5281/zenodo.24132879"
+    description: "Zenodo version DOI for the v1.1.1 archived release"
   - type: doi
     value: "10.5281/zenodo.22046832"
     description: "Zenodo concept DOI covering all released versions"

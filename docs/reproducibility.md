@@ -77,7 +77,7 @@ The 60 stored fold/config decision tables were independently recomputed from the
 bash scripts/recover_p3_tables.sh /path/to/authorized-frozen-project
 ```
 
-The deterministic interpolation test recomputes specificity at TPR 0.95 for all 60 fold/configurations from stored predictions; the maximum absolute difference from the frozen table is 8.33e-17. The frozen paired bootstrap intervals are preserved as published files. v1.1.1 adds a corrected patient-cluster bootstrap helper; a separate read-only 2,000-replicate replay from the frozen predictions retained the frozen interval-exclusion count (2/9), with endpoint differences attributable to the bootstrap random sequence. The frozen values remain the reportable estimates.
+The deterministic interpolation test recomputes specificity at TPR 0.95 for all 60 fold/configurations from stored predictions; the maximum absolute difference from the frozen table is 8.33e-17. The frozen paired bootstrap intervals are preserved as published files. v1.1.1 adds a corrected patient-cluster bootstrap helper; a separate read-only 2,000-replicate replay from the frozen predictions retained the frozen interval-exclusion count (2/9), with endpoint differences attributable to the bootstrap random sequence. The helper excludes patients whose ECGs carry inconsistent OMI labels; the frozen script retains those rows. This code-path difference is documented and does not change the frozen results. The frozen values remain the reportable estimates.
 
 ## 100/250 Hz
 
