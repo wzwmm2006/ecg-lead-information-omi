@@ -4,7 +4,7 @@
 
 v1.1.0 documents the original OOF, patient-disjoint A1/A2a, same-source held-out, 100/250-Hz sampling sensitivity, and post hoc P3 analyses. These are distinct evidence layers. They are not all validations of a single deployed 95%-sensitivity threshold.
 
-The historical scripts are stored verbatim under `provenance/frozen_scripts/`. Their filenames and SHA-256 hashes are listed in `provenance/frozen_scripts/FROZEN_SCRIPT_HASHES.json`. The scripts preserve absolute Windows paths and are intended for inspection, not cross-platform execution. Public helpers under `src/recovered/` provide data-free checks and deterministic implementations; they are not a claim that the original neural network training was rerun.
+The historical scripts are stored under `provenance/frozen_scripts/`. Two are byte-identical to their sources; the other twelve are sanitized public copies in which machine paths and a private evaluator endpoint were replaced by placeholders. `provenance/frozen_scripts/PUBLIC_SANITIZATION.md` describes the substitutions, and `FROZEN_SCRIPT_SOURCE_FINGERPRINTS.json` lists each original-source SHA-256 beside the sanitized public SHA-256. The scripts preserve the original analysis logic but are inspection artifacts, not cross-platform entry points. Public helpers under `src/recovered/` provide data-free checks and deterministic implementations; they make no claim that the original neural network training was rerun.
 
 ## Frozen specification
 
@@ -52,7 +52,7 @@ bash scripts/evaluate_models.sh
 
 The v1.1.0 preprocessing validates lead names and order, 5,000-sample length, mV units, physical-signal status, and input finiteness. The v1.0.0 implementation checked only sampling frequency.
 
-The OOF class weights use the full-development prevalence (1,151/17,958), matching the historical executor. The v1.0.0 public implementation used the training-fold prevalence. Both behaviors are documented in `provenance/V1_0_0_RELEASE_IDENTITY.md`.
+OOF class weights are computed from the complete development frame before the fold loop (1,151 OMI / 17,958 ECG). The official v1.0.0 tag, the historical frozen executor, and this package agree exactly; see `provenance/V1_0_0_RELEASE_IDENTITY.md`.
 
 ## Frozen-output verification
 

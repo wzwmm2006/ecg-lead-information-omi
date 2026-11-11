@@ -7,7 +7,6 @@ import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold, train_test_split
 
 from src.data.preprocessing import prepare_metadata
-from src.data import frozen
 from src.utils.config import repository_path
 
 
@@ -39,18 +38,18 @@ def load_processed(config: dict, split: str) -> tuple[pd.DataFrame, np.ndarray]:
 
 
 def patient_training_weights(frame: pd.DataFrame) -> np.ndarray:
-    """Return frozen training weights for the supplied training subset.
+    """Return inverse-patient-count weights times inverse-class weights.
 
-    The v1.0.0 public implementation calculated class prevalence from the
-    training fold and is preserved in git history and the audit documents.
-    The original frozen analysis calculated class weights from the full
-    development set (1,151 OMI / 17,958 ECG). This function implements the
-    frozen full-development rule and requires that prevalence explicitly.
+    The class prevalence is calculated over every record in ``frame``. During
+    OOF training, ``frame`` is the complete development set, matching both the
+    v1.0.0 public code and the historical frozen executor. For final 80/20
+    fitting, ``frame`` is the model-fit subset; that behavior is reported
+    separately and is not the OOF weighting rule.
     """
     counts = frame.patient_id.value_counts()
     patient_weight = frame.patient_id.map(1 / counts).to_numpy()
     labels = frame.omi.to_numpy()
-    prevalence = float(frozen.full_development_prevalence)
+    prevalence = labels.mean()
     class_weight = np.where(labels == 1, 1.0 / prevalence, 1.0 / (1.0 - prevalence))
     return patient_weight * class_weight
 

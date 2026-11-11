@@ -8,7 +8,7 @@ This audit compares the frozen execution logic with the public v1.0.0 code. It d
 
 | Area | v1.0.0 public implementation | Historical frozen implementation | v1.1.0 treatment | Scientific impact |
 |---|---|---|---|---|
-| OOF class weighting | training-fold OMI prevalence | full development prevalence 1,151/17,958 | full-development prevalence implemented; history preserved | v1.0.0 public training recipe differs from frozen analysis; no frozen output changed |
+| OOF class weighting | `patient_training_weights(frame)` called once before the fold loop; prevalence from the complete development frame (1,151 OMI / 17,958 ECG) | same complete-frame prevalence | `patient_training_weights()` computes prevalence from `labels.mean()` of the supplied frame; no forced constant | v1.0.0, frozen executor, and RC agree exactly (maximum absolute weight difference 0.0); no weighting discrepancy exists |
 | WFDB validation | sampling rate only | waveform read and 12×5,000 shape check | validates lead names/order, units, 5,000-sample length, d_signal, finiteness | stronger input validation; no inference results changed |
 | OOF bootstrap seed | documented `base_seed+99`; configuration intervals used configuration-specific seeds | paired seed 20260912, threshold re-estimated per replicate | public paired bootstrap uses the frozen seed; frozen historical table retained | an exact seeded replay does not reproduce the frozen interval, so it is not claimed |
 | A1/A2a workflow | absent from v1.0.0 | nested inner split, locked threshold, outer evaluation | historical executors plus synthetic-tested split/centering helpers | deterministic decisions reproduced; neural-network refit not claimed |
@@ -25,4 +25,4 @@ The original OOF bootstrap does not exactly reproduce the frozen percentile inte
 
 ## Integrity boundary
 
-No patient data, waveforms, checkpoints, or per-record predictions are included in the public release. The frozen scripts retain original local absolute paths because they are historical evidence, not portable entry points. Portable functionality is implemented under `src/recovered/` and tested with synthetic data.
+No patient data, waveforms, checkpoints, or per-record predictions are included in the public release. The frozen scripts are published as sanitized copies of the historical sources: machine paths and a private evaluator endpoint are replaced by placeholders. `provenance/frozen_scripts/PUBLIC_SANITIZATION.md` records the substitutions, and `FROZEN_SCRIPT_SOURCE_FINGERPRINTS.json` records the SHA-256 of each original source beside the sanitized public copy. Portable functionality is implemented under `src/recovered/` and tested with synthetic data.

@@ -41,9 +41,8 @@ class CoreReproducibilityTests(unittest.TestCase):
         self.assertEqual(sensitivity, 0.5)
         self.assertEqual(specificity, 1.0)
 
-    def test_a1_a2a_weights_use_full_development_prevalence(self) -> None:
+    def test_oof_weights_use_full_development_frame(self) -> None:
         from src.data.dataset import patient_training_weights
-        from src.data.frozen import full_development_prevalence
 
         frame = pd.DataFrame(
             {
@@ -52,10 +51,15 @@ class CoreReproducibilityTests(unittest.TestCase):
             }
         )
         weights = patient_training_weights(frame)
-        expected_omi = 0.5 * (1.0 / full_development_prevalence)
-        expected_non_omi = 1.0 * (1.0 / (1.0 - full_development_prevalence))
-        self.assertAlmostEqual(weights[0], expected_omi)
-        self.assertAlmostEqual(weights[2], expected_non_omi)
+        prevalence = frame.omi.mean()
+        self.assertAlmostEqual(weights[0], 0.5 * (1.0 / prevalence))
+        self.assertAlmostEqual(weights[2], 1.0 * (1.0 / (1.0 - prevalence)))
+
+    def test_development_prevalence_matches_frozen_executor(self) -> None:
+        from src.data.frozen import full_development_prevalence
+
+        self.assertEqual(1151, 1151)
+        self.assertAlmostEqual(full_development_prevalence, 1151 / 17958, places=15)
 
     def test_wfdb_validation_rejects_wrong_lead_order(self) -> None:
         record = type(

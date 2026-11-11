@@ -2,7 +2,7 @@
 
 Status: FROZEN BEFORE TRAINING
 
-Authority: `D:\老婆资料\论文\Topic890\02_data`
+Authority: `<ROOT>\02_data`
 
 The native clinical ECG is 500 Hz, 5,000 samples per 10-second record and 12 leads. For target rate `r`, the integer block size is `b = 500/r`, and the deterministic reduction is:
 

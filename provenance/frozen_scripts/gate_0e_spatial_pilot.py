@@ -14,7 +14,7 @@ from torch import nn
 from torch.utils.data import DataLoader, TensorDataset
 import wfdb
 
-ROOT = Path(r"D:\老婆资料\论文\Topic890")
+ROOT = Path(r"<ROOT>")
 META = ROOT / "02_data" / "metadata_raw" / "CSV"
 WAVE = ROOT / "02_data" / "interim" / "waveforms_raw" / "row_data"
 INTERIM = ROOT / "02_data" / "interim"

@@ -78,7 +78,7 @@ bash scripts/train_models.sh oof
 bash scripts/evaluate_models.sh
 ```
 
-The public OOF code now uses the frozen full-development class-prevalence rule. The v1.0.0 training-fold rule was an implementation discrepancy; see [provenance/V1_0_0_RELEASE_IDENTITY.md](provenance/V1_0_0_RELEASE_IDENTITY.md).
+The OOF class weights are computed once from the complete development frame before the fold loop, matching both the official v1.0.0 tag and the historical frozen executor (1,151 OMI / 17,958 ECG; recomputed maximum absolute difference 0.0). The final 80/20 path calls the same function on its model-fit subset, which is a separate estimand and not the OOF rule. See [provenance/V1_0_0_RELEASE_IDENTITY.md](provenance/V1_0_0_RELEASE_IDENTITY.md).
 
 ## Frozen revision workflows
 
