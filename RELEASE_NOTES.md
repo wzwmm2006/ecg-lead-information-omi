@@ -18,9 +18,15 @@ Version 1.1.1 is a patch to the Topic890 reproducibility package. It corrects th
 | v1.1.0 GitHub tag | `v1.1.0` |
 | v1.1.0 commit | `6064e366bb853c3557b89189c783d6568b69a391` |
 | v1.1.0 Zenodo DOI | `10.5281/zenodo.24126410` |
+| v1.1.1 GitHub tag | `v1.1.1` |
+| v1.1.1 GitHub commit | `0f73c396e245e91ba20a1e47e8ea95c5d77d809f` |
+| v1.1.1 Zenodo DOI | `10.5281/zenodo.24132879` |
+| v1.1.1 Zenodo record | https://zenodo.org/records/24132879 |
 | Zenodo concept DOI | `10.5281/zenodo.22046832` |
 
 The v1.1.0 tag and Zenodo record remain unchanged. The v1.1.0 public P3 bootstrap helper is defective; use the v1.1.1 helper for patient-cluster bootstrap.
+
+Zenodo record 24132879 is published as version 1.1.1 and contains `wzwmm2006/ecg-lead-information-omi-v1.1.1.zip` (159,790 bytes; MD5 `deeff03a034d4b503df4e6a13f89f12b`; SHA-256 `4f6ccaa5b53e496dfa28d926cd1030e7d2f10e3f7d0720f0951b099d537fc5b6`). The immutable GitHub tag `v1.1.1` was created before the version DOI was assigned; its snapshot retains the v1.1.0 DOI in `CITATION.cff` and `CODE_AVAILABILITY.md`. The public `main` branch and this Release record identify the archived v1.1.1 DOI. The tag and Zenodo archive were not rewritten.
 
 ## Research boundary
 
